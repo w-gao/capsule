@@ -1,0 +1,25 @@
+.HomeView {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #bba6fc;
+  background: linear-gradient(34deg, #ded8ff, #bba6fc);
+
+  &__container {
+    margin: 30px auto;
+    padding: 30px;
+    width: 80%;
+    min-width: 300px;
+    max-width: 80em;
+    min-height: 300px;
+    justify-content: center;
+    text-align: center;
+    background: #fff;
+  }
+
+  &__logo {
+  }
+
+}
