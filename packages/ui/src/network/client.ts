@@ -4,11 +4,14 @@ import {BinaryReader, BinaryWriter, ProtocolId} from "@capsule/common";
 export class Client {
     private readonly baseUrl: string;
     private ws?: WebSocket;
-    private connected: boolean;
+
+    public connected: boolean;
+    public spawned: boolean;
 
     constructor(baseUrl?: string) {
         this.baseUrl = baseUrl || "http://localhost:5000";
         this.connected = false;
+        this.spawned = false;
 
         console.log("initialize client");
     }

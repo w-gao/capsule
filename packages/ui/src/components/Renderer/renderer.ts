@@ -65,7 +65,7 @@ export class Renderer {
     }
 
     private makeController(): void {
-        const camera = new FreeCamera("camera", new Vector3(0, 1, 0), this.scene);
+        const camera = new FreeCamera("camera", new Vector3(1, 1, -5), this.scene);
         camera.attachControl();
 
         camera.applyGravity = true;
