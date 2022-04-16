@@ -1,5 +1,6 @@
 import MainMenu from "../components/MainMenu/MainMenu";
 import {useCapsule} from "../contexts/CapsuleContext";
+import RenderContainer from "../components/Renderer/RenderContainer";
 import './Home.scss'
 
 function HomeView() {
@@ -7,9 +8,11 @@ function HomeView() {
 
     return (
         <div className="HomeView">
-            <div className="HomeView__container">
-                <MainMenu/>
-            </div>
+            <RenderContainer />
+
+            {/*<div className="HomeView__container">*/}
+            {/*    <MainMenu/>*/}
+            {/*</div>*/}
         </div>
     )
 }

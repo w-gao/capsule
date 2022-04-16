@@ -61,22 +61,10 @@ export class BinaryReader {
         return this.buffer.readUInt16BE(i);
     }
 
-    public unpackLShort(): short {
-        const i = this.offset;
-        this.offset += 2;
-        return this.buffer.readUInt16LE(i);
-    }
-
     public unpackSignedShort(): short {
         const i = this.offset;
         this.offset += 2;
         return this.buffer.readInt16BE(i);
-    }
-
-    public unpackSignedLShort(): short {
-        const i = this.offset;
-        this.offset += 2;
-        return this.buffer.readInt16LE(i);
     }
 
     public unpackInt(): int {
@@ -85,34 +73,16 @@ export class BinaryReader {
         return this.buffer.readInt32BE(i);
     }
 
-    public unpackLInt(): int {
-        const i = this.offset;
-        this.offset += 4;
-        return this.buffer.readInt32LE(i);
-    }
-
     public unpackFloat(): float {
         const i = this.offset;
         this.offset += 4;
         return this.buffer.readFloatBE(i);
     }
 
-    public unpackLFloat(): float {
-        const i = this.offset;
-        this.offset += 4;
-        return this.buffer.readFloatLE(i);
-    }
-
     public unpackDouble(): double {
         const i = this.offset;
         this.offset += 8;
         return this.buffer.readDoubleBE(i);
-    }
-
-    public unpackLDouble(): double {
-        const i = this.offset;
-        this.offset += 8;
-        return this.buffer.readDoubleLE(i);
     }
 
     public unpackString(): string {

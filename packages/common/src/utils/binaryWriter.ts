@@ -45,18 +45,8 @@ export class BinaryWriter {
         this.offset += 2;
     }
 
-    public packLShort(value: short): void {
-        this.buffer.writeUInt16LE(value, this.offset);
-        this.offset += 2;
-    }
-
     public packSignedShort(value: short): void {
         this.buffer.writeInt16BE(value, this.offset);
-        this.offset += 2;
-    }
-
-    public packSignedLShort(value: short): void {
-        this.buffer.writeInt16LE(value, this.offset);
         this.offset += 2;
     }
 
@@ -65,28 +55,13 @@ export class BinaryWriter {
         this.offset += 4;
     }
 
-    public packLInt(value: int): void {
-        this.buffer.writeInt32LE(value, this.offset);
-        this.offset += 4;
-    }
-
     public packFloat(value: float): void {
         this.buffer.writeFloatBE(value, this.offset);
         this.offset += 4;
     }
 
-    public packLFloat(value: float): void {
-        this.buffer.writeFloatLE(value, this.offset);
-        this.offset += 4;
-    }
-
     public packDouble(value: double): void {
         this.buffer.writeDoubleBE(value, this.offset);
-        this.offset += 8;
-    }
-
-    public packLDouble(value: double): void {
-        this.buffer.writeDoubleLE(value, this.offset);
         this.offset += 8;
     }
 
