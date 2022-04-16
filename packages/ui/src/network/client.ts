@@ -7,6 +7,7 @@ export class Client {
 
     public connected: boolean;
     public spawned: boolean;
+    public spawnCallback?: () => void;
 
     constructor(baseUrl?: string) {
         this.baseUrl = baseUrl || "http://localhost:5000";
@@ -55,6 +56,12 @@ export class Client {
         pk.packByte(ProtocolId.ping);
         pk.packString("~~~DATETIME~~~");
         this.sendPacket(pk);
+    }
+
+    public sendJoinRequest(username: string, emote: number = 0) {
+        // TODO: only so that we can fake join the server
+        this.spawned = true;
+        if (this.spawnCallback) this.spawnCallback();
     }
 
     private sendPacket(pk: BinaryWriter) {

@@ -5,11 +5,11 @@ import './Home.scss'
 import {FC, ReactElement} from "react";
 
 function HomeView() {
-    const {connected, error, client} = useCapsule();
+    const {connected, spawned, error, client} = useCapsule();
 
     let component: ReactElement;
 
-    if (connected && client?.spawned) {
+    if (/* connected && */ spawned) {
         // we're spawned into a world. display the 3D scene
         component = (
                 <RenderContainer/>

@@ -1,13 +1,20 @@
 import logo from 'assets/logo.png';
 import './MainMenu.scss'
 import {useCapsule} from "../../contexts/CapsuleContext";
+import {useRef} from "react";
 
 
 function MainMenu() {
     const {connected, client} = useCapsule();
+    const usernameInputRef = useRef<HTMLInputElement>(null);
 
     const joinServer = () => {
-        client?.sendPing();
+        let username = "anonymous"
+        if (usernameInputRef.current) {
+            username = usernameInputRef.current.value;
+        }
+
+        client?.sendJoinRequest(username);
     }
 
     return (
@@ -23,10 +30,10 @@ function MainMenu() {
                 <div className="MainMenu__usernameContainer">
                     <label htmlFor="username">username:</label>
                     <input
+                        ref={usernameInputRef}
                         type="text"
                         id="username"
                         name="username"
-                        defaultValue="LA Hacks"
                         maxLength={20}
                         className="MainMenu__username"
                         placeholder=""
