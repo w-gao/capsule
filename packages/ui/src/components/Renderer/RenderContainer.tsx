@@ -43,7 +43,7 @@ function RenderContainer() {
                     console.log("send message: " + message);
                     if (connected) {
                         client?.sendChat(message, 1);
-                    } else if(client?.newChatCallback) {
+                    } else if (client?.newChatCallback) {
                         // broadcast locally
                         client?.newChatCallback(1, "[self] " + message);
                     }
@@ -54,6 +54,22 @@ function RenderContainer() {
 
         if (chatBoxRef.current) {
             chatBoxRef.current.addEventListener("keyup", sendChat);
+        }
+
+        renderer.updateMoveCallback = ((location, rotation) => {
+            client?.sendMoveEntity("", location, rotation);
+        });
+
+        if (client) {
+            client.spawnEntityCallback = (uuid, location, rotation) => {
+                renderer.spawnEntity(uuid, location, rotation);
+            }
+            client.moveEntityCallback = (uuid, location, rotation) => {
+                renderer.moveEntity(uuid, location, rotation);
+            }
+            client.despawnEntityCallback = (uuid) => {
+                renderer.despawnEntity(uuid);
+            }
         }
 
         let dispose = () => {

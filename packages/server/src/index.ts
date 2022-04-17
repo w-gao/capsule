@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import http from "http";
 import WebSocket from "ws";
 import {v4 as uuid4} from"uuid";
@@ -10,6 +11,8 @@ const PORT = Number(process.env.PORT || 5000);
 
 const app = express();
 const server = http.createServer(app);
+
+app.use(cors());
 
 const capsuleServer = new Server();
 

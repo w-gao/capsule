@@ -22,6 +22,26 @@ export abstract class Channel {
         this.players.delete(player.uuid);
     }
 
+    public spawnEntities(player: Player): void {
+        this.players.forEach((other, uuid) => {
+            if (uuid == player.uuid) return;
+            player.sendSpawnEntity(uuid, other.location, other.rotation);
+        });
+    }
+
+    public moveEntity(player: Player): void {
+        this.players.forEach((other, uuid_o) => {
+            if (uuid_o == player.uuid) return;
+            other.sendMoveEntity(player.uuid, player.location, player.rotation);
+        });
+    }
+
+    public despawnEntity(uuid: string): void {
+        this.players.forEach((other, uuid_o) => {
+            if (uuid == uuid_o) return;
+            other.sendDespawnEntity(uuid);
+        });
+    }
 
     public broadcast(pk: BinaryWriter) {
         this.players.forEach((player) => {

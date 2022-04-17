@@ -57,8 +57,6 @@ export class Server {
     }
 
     public onPlayerMessage(uuid: string, raw: ArrayBuffer) {
-        console.log(`handling message from ${uuid}.`);
-
         const player = this.players.get(uuid);
 
         if (player === undefined) {

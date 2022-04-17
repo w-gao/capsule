@@ -1,5 +1,6 @@
 import {Buffer} from "buffer";
 import {byte, double, float, int, short} from "../types";
+import {Vector3} from "./vector3";
 
 
 export class BinaryReader {
@@ -89,9 +90,9 @@ export class BinaryReader {
         return this.unpack(this.unpackInt()).toString();
     }
 
-    // public unpackVector3(): Vector3 {
-    //
-    //     return new Vector3(this.unpackLFloat(), this.unpackLFloat(), this.unpackLFloat());
-    // }
+    public unpackVector3(): Vector3 {
+        return new Vector3(
+            this.unpackFloat(), this.unpackFloat(), this.unpackFloat());
+    }
 
 }

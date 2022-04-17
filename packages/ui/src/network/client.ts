@@ -1,4 +1,4 @@
-import {BinaryReader, BinaryWriter, ProtocolId} from "@capsule/common";
+import {BinaryReader, BinaryWriter, ProtocolId, Vector3} from "@capsule/common";
 
 
 export class Client {
@@ -11,6 +11,10 @@ export class Client {
     public disconnectCallback?: () => void;
     public spawnCallback?: () => void;
     public newChatCallback?: (type: number, message: string) => void;
+
+    public spawnEntityCallback?: (uuid: string, location: Vector3, rotation: Vector3) => void;
+    public moveEntityCallback?: (uuid: string, location: Vector3, rotation: Vector3) => void;
+    public despawnEntityCallback?: (uuid: string) => void;
 
     constructor(baseUrl?: string) {
         this.baseUrl = baseUrl || "http://localhost:5000";
@@ -65,6 +69,15 @@ export class Client {
             case ProtocolId.joinResponse:
                 this.handleJoinResponse(pk);
                 break;
+            case ProtocolId.spawnEntity:
+                this.handleSpawnEntity(pk);
+                break;
+            case ProtocolId.moveEntity:
+                this.handleMoveEntity(pk);
+                break;
+            case ProtocolId.despawnEntity:
+                this.handleDespawnEntity(pk);
+                break;
             default:
                 console.warn("[client] received unrecognized packet: " + id);
                 break;
@@ -81,6 +94,28 @@ export class Client {
         const channelUUID = pk.unpackString();
         console.log("joining " + channelUUID + "...");
         this.spawn(channelUUID);
+    }
+
+    public handleSpawnEntity(pk: BinaryReader) {
+        const uuid = pk.unpackString();
+        const location = pk.unpackVector3();
+        const rotation = pk.unpackVector3();
+
+        if(this.spawnEntityCallback) this.spawnEntityCallback(uuid, location, rotation);
+    }
+
+    public handleMoveEntity(pk: BinaryReader) {
+        const uuid = pk.unpackString();
+        const location = pk.unpackVector3();
+        const rotation = pk.unpackVector3();
+
+        if(this.moveEntityCallback) this.moveEntityCallback(uuid, location, rotation);
+    }
+
+    public handleDespawnEntity(pk: BinaryReader) {
+        const uuid = pk.unpackString();
+
+        if (this.despawnEntityCallback) this.despawnEntityCallback(uuid);
     }
 
     public sendPing() {
@@ -105,6 +140,15 @@ export class Client {
         pk.packByte(ProtocolId.joinRequest);
         pk.packString(username);
         pk.packInt(emote);
+        this.sendPacket(pk);
+    }
+
+    public sendMoveEntity(uuid: string, location: Vector3, rotation: Vector3) {
+        const pk = new BinaryWriter(29 + uuid.length + 30);
+        pk.packByte(ProtocolId.moveEntity);
+        pk.packString(uuid);
+        pk.packVector3(location);
+        pk.packVector3(rotation);
         this.sendPacket(pk);
     }
 

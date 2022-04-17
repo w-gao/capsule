@@ -1,5 +1,6 @@
 import {Buffer} from "buffer";
 import {byte, double, float, int, short} from "../types";
+import {Vector3} from "./vector3";
 
 
 export class BinaryWriter {
@@ -69,6 +70,13 @@ export class BinaryWriter {
         this.packInt(value.length);
         this.buffer.write(value, this.offset);
         this.offset += value.length;
+    }
+
+    public packVector3(v3: Vector3): void {
+        this.packFloat(v3.x);
+        this.packFloat(v3.y);
+        this.packFloat(v3.z);
+        this.offset += 12;
     }
 
 }

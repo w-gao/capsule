@@ -1,6 +1,6 @@
 import {BinaryReader} from "@capsule/common/dist/utils";
 import WebSocket from "ws";
-import {BinaryWriter, ProtocolId} from "@capsule/common";
+import {BinaryWriter, ProtocolId, Vector3} from "@capsule/common";
 import {Channel} from "./channel";
 import {Server} from "./server";
 
@@ -12,11 +12,16 @@ export class Player {
     private channel?: Channel;
 
     private username?: string;
+    public location: Vector3;
+    public rotation: Vector3;
 
     constructor(ws: WebSocket & {uuid: string}, server: Server) {
         this.ws = ws;
         this.server = server;
         this.uuid = ws.uuid;
+
+        this.location = new Vector3(0, 0, 0);
+        this.rotation = new Vector3(0, 0, 0);
     }
 
     public joinChannel(channel: Channel): boolean {
@@ -51,10 +56,23 @@ export class Player {
         const channelID = "default";
         if (this.server.switchChannel(this, channelID)) {
             this.sendJoinResponse(channelID);
+            this.channel?.spawnEntities(this);
             return;
         }
 
         this.disconnect("join failed");
+    }
+
+    public handleMoveEntity(pk: BinaryReader) {
+        pk.unpackString();   // uuid
+        const location = pk.unpackVector3();
+        const rotation = pk.unpackVector3();
+
+        this.location = location;
+        this.rotation = rotation;
+
+        // broadcast move
+        this.channel?.moveEntity(this);
     }
 
     public disconnect(reason?: string) {
@@ -82,6 +100,31 @@ export class Player {
         const pk = new BinaryWriter(5 + channelUUID.length);
         pk.packByte(ProtocolId.joinResponse);
         pk.packString(channelUUID);
+        this.sendPacket(pk);
+    }
+
+    public sendSpawnEntity(uuid: string, location: Vector3, rotation: Vector3) {
+        const pk = new BinaryWriter(29 + uuid.length + 30);
+        pk.packByte(ProtocolId.spawnEntity);
+        pk.packString(uuid);
+        pk.packVector3(location);
+        pk.packVector3(rotation);
+        this.sendPacket(pk);
+    }
+
+    public sendMoveEntity(uuid: string, location: Vector3, rotation: Vector3) {
+        const pk = new BinaryWriter(29 + uuid.length + 30);
+        pk.packByte(ProtocolId.moveEntity);
+        pk.packString(uuid);
+        pk.packVector3(location);
+        pk.packVector3(rotation);
+        this.sendPacket(pk);
+    }
+
+    public sendDespawnEntity(uuid: string) {
+        const pk = new BinaryWriter(5 + uuid.length);
+        pk.packByte(ProtocolId.despawnEntity);
+        pk.packString(uuid);
         this.sendPacket(pk);
     }
 
