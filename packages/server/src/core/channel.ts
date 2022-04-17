@@ -29,10 +29,10 @@ export abstract class Channel {
         })
     }
 
-    public broadcastMessage(source: string, message: string) {
-        const pk = new BinaryWriter(1 + source.length + message.length);
+    public broadcastMessage(message: string, type: number) {
+        const pk = new BinaryWriter(9 + message.length);
         pk.packByte(ProtocolId.chat);
-        pk.packString(source);
+        pk.packByte(type);
         pk.packString(message);
         this.broadcast(pk);
     }

@@ -93,7 +93,7 @@ export class Client {
     // types: 1 - normal, 2 - announcement
     public sendChat(message: string, type: number) {
         // this is called sendMessage server-side, but message is used here..
-        const pk = new BinaryWriter(2 + message.length);
+        const pk = new BinaryWriter(6 + message.length);
         pk.packByte(ProtocolId.chat);
         pk.packByte(type);
         pk.packString(message);

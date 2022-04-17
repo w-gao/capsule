@@ -49,8 +49,6 @@ export class Renderer {
             "map1.babylon",
             this.scene,
             (meshes => {
-                console.log(meshes);
-
                 // ground HEX: #FAE4C1
 
                 // enable collisions for meshes

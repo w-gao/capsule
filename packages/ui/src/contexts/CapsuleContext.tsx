@@ -42,7 +42,7 @@ export const CapsuleProvider: FC<CapsuleProviderProps> = ({baseUrl, children}: C
             setConnected(true);
 
             // ping the server once in a while to see if we're still online
-            setInterval(pingServer, 5000);
+            setInterval(pingServer, 10 * 1000);
 
         }, err => {
             setError(true);
@@ -54,9 +54,9 @@ export const CapsuleProvider: FC<CapsuleProviderProps> = ({baseUrl, children}: C
         client.spawnCallback = () => setSpawned(client.spawned);
         client.disconnectCallback = () => setConnected(client.connected);
 
-        client.newChatCallback = (type, message) => {
-            console.log(message);
-        }
+        // client.newChatCallback = (type, message) => {
+        //     console.log(message);
+        // }
 
     }, []);
 

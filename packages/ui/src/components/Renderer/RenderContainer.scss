@@ -2,3 +2,47 @@
   width: 100%;
   height: 100%;
 }
+
+.chatContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 500px;
+  height: 400px;
+  padding: 10px;
+}
+
+.chat {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 3px;
+  font-size: 18px;
+  color: #fff9f5;
+  word-wrap: break-word;
+
+  &--yellow {
+    color: #fff578;
+    font-weight: bold;
+  }
+
+}
+
+.sendChatContainer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 500px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.chatBox {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #00000000;
+  color: #fff9f5;
+
+  &:focus {
+    color: #fff9f5;
+    outline: none;
+  }
+}

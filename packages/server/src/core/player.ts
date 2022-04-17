@@ -33,13 +33,14 @@ export class Player {
     public handlePing(pk: BinaryReader) {
         console.log("ping received - " + pk.unpackString());
         this.sendPong();
+        this.sendMessage("Hello from server!", 2);
     }
 
     // player sent a message, broadcast it to the channel
     public handleChat(pk: BinaryReader) {
-        pk.unpackString();
+        pk.unpackByte();
         const message = pk.unpackString();
-        this.channel?.broadcastMessage(this.username || this.uuid, message);
+        this.channel?.broadcastMessage(`[${this.username || this.uuid}] ${message}`, 1);
     }
 
     public handleJoinRequest(pk: BinaryReader) {
@@ -68,9 +69,9 @@ export class Player {
         this.sendPacket(pk);
     }
 
-    // types: 1 - normal, 2 - announcement
+    // types: 1 - normal, 2 - system
     public sendMessage(message: string, type: number) {
-        const pk = new BinaryWriter(2 + message.length);
+        const pk = new BinaryWriter(6 + message.length);
         pk.packByte(ProtocolId.chat);
         pk.packByte(type);
         pk.packString(message);

@@ -42,6 +42,7 @@ function MainMenu() {
                         maxLength={20}
                         className="MainMenu__username"
                         placeholder=""
+                        defaultValue={"LAHacks" + Math.floor(Math.random() * 100)}
                     />
                 </div>
                 <div className="MainMenu__joinServer" onClick={joinServer}>
