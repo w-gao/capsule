@@ -14,7 +14,12 @@ function MainMenu() {
             username = usernameInputRef.current.value;
         }
 
-        client?.sendJoinRequest(username);
+        if (connected) {
+            client?.sendJoinRequest(username);
+        } else {
+            // offline mode
+            client?.spawn("local");
+        }
     }
 
     return (

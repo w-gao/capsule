@@ -1,8 +1,8 @@
 import MainMenu from "../components/MainMenu/MainMenu";
 import {useCapsule} from "../contexts/CapsuleContext";
 import RenderContainer from "../components/Renderer/RenderContainer";
+import {ReactElement} from "react";
 import './Home.scss'
-import {FC, ReactElement} from "react";
 
 function HomeView() {
     const {connected, spawned, error, client} = useCapsule();

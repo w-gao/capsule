@@ -15,6 +15,9 @@ export class Server {
         this.players = new Map<string, Player>();
         this.channels = new Map<string, WorldChannel>();
         this.lobbyChannel = new LobbyChannel(this);
+
+        // make one public world channel for people to join
+        this.channels.set("default", new WorldChannel(this, "default", 1, 100));
     }
 
     public createChannel(mapID: number, maxPlayers: number): string {
@@ -23,6 +26,15 @@ export class Server {
         this.channels.set(uuid, channel);
 
         return uuid;
+    }
+
+    public switchChannel(player: Player, channelUUID: string) {
+        const channel = this.channels.get(channelUUID);
+
+        if (channel) {
+            return player.joinChannel(channel);
+        }
+        return false;
     }
 
     public onPlayerConnect(uuid: string, ws: WebSocket & {uuid: string}) {
@@ -63,6 +75,9 @@ export class Server {
                 break;
             case ProtocolId.chat:
                 player.handleChat(pk);
+                break;
+            case ProtocolId.joinRequest:
+                player.handleJoinRequest(pk);
                 break;
             default:
                 console.warn("received unrecognized packet: " + id);

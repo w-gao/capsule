@@ -7,7 +7,10 @@ export class Client {
 
     public connected: boolean;
     public spawned: boolean;
+
+    public disconnectCallback?: () => void;
     public spawnCallback?: () => void;
+    public newChatCallback?: (type: number, message: string) => void;
 
     constructor(baseUrl?: string) {
         this.baseUrl = baseUrl || "http://localhost:5000";
@@ -20,9 +23,13 @@ export class Client {
     public connect(onSuccess: () => void, onError: (err: Event) => void | undefined) {
         const ws = new WebSocket(this.baseUrl + "/ws");
         ws.binaryType = 'arraybuffer';
-        ws.onmessage = this.handleMessage;
-        ws.onclose = () => this.disconnect(false);
 
+        const that = this;
+        ws.onmessage = function (msg) {
+            that.handleMessage(msg);
+        }
+
+        ws.onclose = () => this.disconnect(false);
         ws.onopen = () => {
             this.connected = true;
             this.ws = ws;
@@ -35,6 +42,13 @@ export class Client {
     public disconnect(notify: boolean = false) {
         this.ws = undefined;
         this.connected = false;
+        if (this.disconnectCallback) this.disconnectCallback();
+    }
+
+    public spawn(channelUUID: string) {
+        this.spawned = true;
+        if (this.spawnCallback) this.spawnCallback();
+        if (this.newChatCallback) this.newChatCallback(2, "[system] spawned to channel: " + channelUUID);
     }
 
     public handleMessage(ev: MessageEvent) {
@@ -45,10 +59,28 @@ export class Client {
             case ProtocolId.pong:
                 console.log("[client] pong received");
                 break;
+            case ProtocolId.chat:
+                this.handleChat(pk);
+                break;
+            case ProtocolId.joinResponse:
+                this.handleJoinResponse(pk);
+                break;
             default:
                 console.warn("[client] received unrecognized packet: " + id);
                 break;
         }
+    }
+
+    public handleChat(pk: BinaryReader) {
+        const type = pk.unpackByte();
+        const message = pk.unpackString();
+        if (this.newChatCallback) this.newChatCallback(type, message);
+    }
+
+    public handleJoinResponse (pk: BinaryReader) {
+        const channelUUID = pk.unpackString();
+        console.log("joining " + channelUUID + "...");
+        this.spawn(channelUUID);
     }
 
     public sendPing() {
@@ -58,10 +90,22 @@ export class Client {
         this.sendPacket(pk);
     }
 
+    // types: 1 - normal, 2 - announcement
+    public sendChat(message: string, type: number) {
+        // this is called sendMessage server-side, but message is used here..
+        const pk = new BinaryWriter(2 + message.length);
+        pk.packByte(ProtocolId.chat);
+        pk.packByte(type);
+        pk.packString(message);
+        this.sendPacket(pk);
+    }
+
     public sendJoinRequest(username: string, emote: number = 0) {
-        // TODO: only so that we can fake join the server
-        this.spawned = true;
-        if (this.spawnCallback) this.spawnCallback();
+        const pk = new BinaryWriter(9 + username.length);
+        pk.packByte(ProtocolId.joinRequest);
+        pk.packString(username);
+        pk.packInt(emote);
+        this.sendPacket(pk);
     }
 
     private sendPacket(pk: BinaryWriter) {

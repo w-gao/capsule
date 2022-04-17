@@ -52,6 +52,11 @@ export const CapsuleProvider: FC<CapsuleProviderProps> = ({baseUrl, children}: C
         // hook into client's spawn event
         // TODO: implement event system in the future
         client.spawnCallback = () => setSpawned(client.spawned);
+        client.disconnectCallback = () => setConnected(client.connected);
+
+        client.newChatCallback = (type, message) => {
+            console.log(message);
+        }
 
     }, []);
 

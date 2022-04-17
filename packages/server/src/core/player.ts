@@ -42,7 +42,23 @@ export class Player {
         this.channel?.broadcastMessage(this.username || this.uuid, message);
     }
 
-    public disconnect() {
+    public handleJoinRequest(pk: BinaryReader) {
+        this.username = pk.unpackString();
+        // const emote = pk.unpackInt();
+
+        // also channel ID, but not going to be included in the MVP
+        const channelID = "default";
+        if (this.server.switchChannel(this, channelID)) {
+            this.sendJoinResponse(channelID);
+            return;
+        }
+
+        this.disconnect("join failed");
+    }
+
+    public disconnect(reason?: string) {
+        // might want to send custom disconnect packet first
+        this.ws.close(200, reason);
     }
 
     public sendPong() {
@@ -58,6 +74,13 @@ export class Player {
         pk.packByte(ProtocolId.chat);
         pk.packByte(type);
         pk.packString(message);
+        this.sendPacket(pk);
+    }
+
+    public sendJoinResponse(channelUUID: string) {
+        const pk = new BinaryWriter(5 + channelUUID.length);
+        pk.packByte(ProtocolId.joinResponse);
+        pk.packString(channelUUID);
         this.sendPacket(pk);
     }
 
