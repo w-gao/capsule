@@ -4,11 +4,10 @@ import './index.css'
 import {CapsuleProvider} from "./contexts/CapsuleContext";
 import HomeView from './views/Home.view'
 
-//       <CapsuleProvider baseUrl="wss://la-hacks-2022-capsule.wl.r.appspot.com">
 
 ReactDOM.render(
   <React.StrictMode>
-      <CapsuleProvider baseUrl="ws://localhost:5000">
+      <CapsuleProvider baseUrl="wss://la-hacks-2022-capsule.wl.r.appspot.com">
       <HomeView />
       </CapsuleProvider>
   </React.StrictMode>,
