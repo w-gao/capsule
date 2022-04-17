@@ -19,6 +19,7 @@ function MainMenu() {
         } else {
             // offline mode
             client?.spawn("local");
+            if (client?.newChatCallback) client.newChatCallback(2, "Offline mode");
         }
     }
 
@@ -46,7 +47,7 @@ function MainMenu() {
                     />
                 </div>
                 <div className="MainMenu__joinServer" onClick={joinServer}>
-                    JOIN
+                    JOIN {connected ? "SERVER" : "OFFLINE"}
                 </div>
             </div>
         </div>

@@ -9,7 +9,7 @@ function RenderContainer() {
     const chatRef = useRef<HTMLDivElement>(null);
     const chatBoxRef = useRef<HTMLInputElement>(null);
 
-    const {client} = useCapsule();
+    const {client, connected} = useCapsule();
 
     useEffect(() => {
         if (!reactCanvas.current) {
@@ -23,8 +23,6 @@ function RenderContainer() {
             const container = chatRef.current;
 
             client.newChatCallback = (type, message) => {
-                console.log(type + "; " + message);
-
                 const div = document.createElement("div");
                 div.className = "chat";
                 const textNode = document.createTextNode(message);
@@ -32,6 +30,8 @@ function RenderContainer() {
                 container.appendChild(div);
                 setTimeout(() => container.removeChild(div), 10 * 1000);
             }
+
+            client.newChatCallback(1, "Welcome to Capsule3D!");
         }
 
         const sendChat = (ev: KeyboardEvent) => {
@@ -41,7 +41,12 @@ function RenderContainer() {
                 if (ev.keyCode === 13 && message) {
                     ev.preventDefault();
                     console.log("send message: " + message);
-                    client?.sendChat(message, 1);
+                    if (connected) {
+                        client?.sendChat(message, 1);
+                    } else if(client?.newChatCallback) {
+                        // broadcast locally
+                        client?.newChatCallback(1, "[self] " + message);
+                    }
                     chatBox.value = "";
                 }
             }
@@ -64,7 +69,6 @@ function RenderContainer() {
     return (
         <React.Fragment>
             <div ref={chatRef} className="chatContainer">
-                <div className="chat">Welcome to Capsule!</div>
             </div>
             <div className="sendChatContainer">
                 <input

@@ -38,7 +38,7 @@ export class Player {
 
     // player sent a message, broadcast it to the channel
     public handleChat(pk: BinaryReader) {
-        pk.unpackByte();
+        pk.unpackByte();  // assume chat
         const message = pk.unpackString();
         this.channel?.broadcastMessage(`[${this.username || this.uuid}] ${message}`, 1);
     }

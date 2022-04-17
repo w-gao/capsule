@@ -91,7 +91,7 @@ export class Client {
     }
 
     // types: 1 - normal, 2 - announcement
-    public sendChat(message: string, type: number) {
+    public sendChat(message: string, type: number) {  // TODO: fix the parameter order!
         // this is called sendMessage server-side, but message is used here..
         const pk = new BinaryWriter(6 + message.length);
         pk.packByte(ProtocolId.chat);
