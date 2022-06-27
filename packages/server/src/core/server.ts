@@ -77,6 +77,9 @@ export class Server {
             case ProtocolId.joinRequest:
                 player.handleJoinRequest(pk);
                 break;
+            case ProtocolId.moveEntity:
+                player.handleMoveEntity(pk);
+                break;
             default:
                 console.warn("received unrecognized packet: " + id);
                 break;

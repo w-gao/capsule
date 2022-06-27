@@ -19,10 +19,10 @@ const capsuleServer = new Server();
 
 const wss = new WebSocket.Server({ server: server, path: "/ws" });
 
-wss.on('connection', (ws: (WebSocket & {uuid: string})) => {
+wss.on('connection', (ws: (WebSocket & {uuid: string}), req) => {
     ws.uuid = uuid4().toString();
     capsuleServer.onPlayerConnect(ws.uuid, ws);
-    console.log(`client ${ws.uuid} connected.`);
+    console.log(`client ${ws.uuid} from ${req.socket.remoteAddress} connected.`);
 
     ws.on("open", () => {
         // when is this called?

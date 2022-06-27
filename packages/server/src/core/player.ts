@@ -46,6 +46,8 @@ export class Player {
         pk.unpackByte();  // assume chat
         const message = pk.unpackString();
         this.channel?.broadcastMessage(`[${this.username || this.uuid}] ${message}`, 1);
+
+        console.log(`${new Date().toISOString()} [${this.username || this.uuid}] ${message}`);
     }
 
     public handleJoinRequest(pk: BinaryReader) {
